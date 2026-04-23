@@ -33,15 +33,15 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<@NonNull String> createOrder(@RequestBody OrderRequest request){
-        System.out.println("Received order for user: " + request.userId());
+        log.info("Received order request for user: {}", request.userId());
         TokenBucket bucket = buckets.computeIfAbsent(request.userId(), id -> new TokenBucket(DEFAULT_BUCKET_CAPACITY, DEFAULT_NUM_TOKENS_REFILL, DEFAULT_TOKEN_REFILL_PERIOD_MILLIS));
 
         if(!bucket.tryConsume(1)){
-            System.out.println("[" + Thread.currentThread().getName() + "] - No tokens available");
+            log.warn("No tokens available");
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Insufficient tokens, try later\n");
         }
         String uuid = UUID.randomUUID().toString();
-        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("order-topic", uuid, "OrderPlaced for %s".formatted(request.userId()));
+        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send("order-placed", uuid, "OrderPlaced for %s".formatted(request.userId()));
         future.whenComplete((sr, ex) -> {
             if(ex != null){
                 log.error("Error occured while publishing event to order topic", ex);

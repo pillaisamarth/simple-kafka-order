@@ -3,4 +3,5 @@ spring:
     name: sko
   kafka:
     bootstrap-servers: localhost:9092
-
+    consumer:
+      group-id: ${spring.application.name}
