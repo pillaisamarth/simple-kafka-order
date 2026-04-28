@@ -1,0 +1,10 @@
+to this and pmt-svc applications together, use the docker-compose.yml file in the repository
+and go to the folder containing that, then execute
+
+sudo docker-compose up --build -d
+
+
+To check logs for the started applications
+
+sudo docker-compose logs -f service_name
+
