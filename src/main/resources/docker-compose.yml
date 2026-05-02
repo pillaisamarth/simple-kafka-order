@@ -41,6 +41,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CLUSTER_ID: '4L69no3pZueztLkG84OCpQ'
+      KAFKA_NUM_PARTITIONS: 3
     networks:
       - app-net
 
