@@ -51,9 +51,9 @@ public class OrderController {
         message = message.formatted(orderId, request.userId(), request.amount());
         orderSender.send(message);
         //todo remove duplicate send
-        for(int i = 0; i < 20; i++){
-            orderSender.send(message);
-        }
+//        for(int i = 0; i < 20; i++){
+//            orderSender.send(message);
+//        }
         //todo remove until the previous line
         log.info("Sending response for id: {}", uuid);
         return ResponseEntity.ok("Order received with id: " + uuid + "\n");
