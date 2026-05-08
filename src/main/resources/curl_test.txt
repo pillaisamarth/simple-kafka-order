@@ -1,1 +1,6 @@
 curl -X POST http://localhost:8080/orders -H "Content-Type: application/json" -d '{"userId":"user123", "amount":1000.0}'
+
+curl -X GET http://localhost:8082/stats/success -H "Content-Type: application/json"
+curl -X GET http://localhost:8082/stats/received -H "Content-Type: application/json"
+curl -X GET http://localhost:8082/stats/dlt -H "Content-Type: application/json"
+
