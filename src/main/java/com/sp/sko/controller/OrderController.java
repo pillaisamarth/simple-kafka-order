@@ -1,8 +1,10 @@
 package com.sp.sko.controller;
 
 import com.sp.sko.kafka.OrderSender;
+import com.sp.sko.model.OrderEvent;
 import com.sp.sko.model.OrderRequest;
 import com.sp.sko.model.TokenBucket;
+import com.sp.sko.service.OrderProcessService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -29,7 +31,7 @@ public class OrderController {
     private static final long DEFAULT_TOKEN_REFILL_PERIOD_MILLIS = 5000;
     private static final long DEFAULT_NUM_TOKENS_REFILL = 2;
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final OrderSender orderSender;
+    private final OrderProcessService orderProcessService;
     private final Map<String, TokenBucket> buckets = new ConcurrentHashMap<>();
 
     @PostMapping
@@ -41,21 +43,8 @@ public class OrderController {
             log.warn("No tokens available");
             return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Insufficient tokens, try later\n");
         }
-        String uuid = UUID.randomUUID().toString();
         String orderId = UUID.randomUUID().toString();
-        String message = "{\n" +
-                "  \"orderId\": \"%s\",\n" +
-                "  \"userId\": \"%s\",\n" +
-                "  \"amount\": %s\n" +
-                "}";
-        message = message.formatted(orderId, request.userId(), request.amount());
-        orderSender.send(message);
-        //todo remove duplicate send
-//        for(int i = 0; i < 20; i++){
-//            orderSender.send(message);
-//        }
-        //todo remove until the previous line
-        log.info("Sending response for id: {}", uuid);
-        return ResponseEntity.ok("Order received with id: " + uuid + "\n");
+        orderProcessService.process(new OrderEvent(orderId, request.userId(), request.amount()));
+        return ResponseEntity.ok("Order created with order-id: %s".formatted(orderId));
     }
 }
