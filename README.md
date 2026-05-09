@@ -1,8 +1,31 @@
 # Simple kafka order service
 ## Architecture
 
-![alt text](https://github.com/pillaisamarth/simple-kafka-order/blob/main/mermaid-diagram-2026-05-10-024416.png?raw=true)
+```mermaid
+graph TD
+    %% Define the User
+    User((User/Client))
+    Kafka((Kafka topic: order-placed))
+    
+    %% Define the Controller logic
+    Controller[Order Controller]
+    CheckToken{Token Present?}
+    
+    %% Define the Outcomes
+    Error429[/429 Too Many Requests/]
+    Process[Proceed to Service Logic]
 
+    %% Connections
+    User -->|POST /orders| Controller
+    Controller --> CheckToken
+
+    CheckToken -- No --> Error429
+    CheckToken -- Yes --> Process
+
+    %% Return path for error
+    Error429 -.->|Response| User
+    Process --> |Send to kafka topic| Kafka
+```
 
 ### Core
 The service will expose a rest endpoint, which can be used to place an order,
