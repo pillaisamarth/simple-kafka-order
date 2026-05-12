@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sp</groupId>
-	<artifactId>sko</artifactId>
+	<artifactId>simple-kafka-order</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>

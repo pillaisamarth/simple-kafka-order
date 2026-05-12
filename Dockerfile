@@ -1,3 +1,3 @@
 from amazoncorretto:17
-copy ./target/sko-0.0.1-SNAPSHOT.jar sko.jar
-CMD ["java", "-jar", "sko.jar"]
+copy ./target/simple-kafka-order-0.0.1-SNAPSHOT.jar simple-kafka-order.jar
+CMD ["java", "-jar", "simple-kafka-order.jar"]
